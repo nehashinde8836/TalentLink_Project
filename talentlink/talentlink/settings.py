@@ -1,12 +1,22 @@
+updted-
+
 from pathlib import Path
 from datetime import timedelta
+import os
+import dj_database_url
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(_file_).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-@!so!+fj$qpw$1b*bpr_s60&_!-s56(c5g^&memh$sxn$9en9='
-DEBUG = True
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # ✅ Add for dev safety
+# 🔐 Secret Key from environment
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
+# 🛠 Debug mode from environment
+DEBUG = os.environ.get('DEBUG') == 'True'
+
+# 🌐 Allowed hosts from environment
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+
+# 📦 Installed apps
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -17,9 +27,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'core',
-    
 ]
 
+# 🧱 Middleware
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -33,6 +43,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'talentlink.urls'
 
+# 🧩 Templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -50,13 +61,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'talentlink.wsgi.application'
 
+# 🗄 PostgreSQL Database from environment
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
 }
 
+# 🔐 Password validators
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -64,11 +74,13 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# 🌍 Localization
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'Asia/Kolkata'  # ✅ Localize for India
+TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
 
+# 📁 Static and media files
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
 MEDIA_URL = '/media/'
@@ -76,7 +88,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ✅ REST Framework Configuration
+# 🔐 REST Framework + JWT
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -86,7 +98,6 @@ REST_FRAMEWORK = {
     ),
 }
 
-# ✅ JWT Token Lifetime
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
@@ -94,9 +105,6 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
-# ✅ CORS Configuration
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:3001",
-]
+# 🌐 CORS from environment
+CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', '').split(',')
 CORS_ALLOW_CREDENTIALS = True
